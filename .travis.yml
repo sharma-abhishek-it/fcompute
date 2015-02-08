@@ -13,7 +13,7 @@ before_install:
   - go get github.com/mattn/goveralls
   - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
 
-before_script:
+install:
   - go get ./...
 
 script:
