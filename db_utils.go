@@ -3,6 +3,7 @@ package fcompute
 import(
   "github.com/garyburd/redigo/redis"
   "encoding/json"
+  "os"
 )
 
 func even(x int) bool { return x % 2 == 0 }
@@ -16,13 +17,16 @@ func odd(x int) bool  { return x % 2 != 0 }
 // meaning that productNames[i] maps to productsFData[i]
 //
 // NOTE: We use Sort to minimie round trips and hence the need for MultiBulk
-func GetBookKeepingData(user_id int) (
-  productsFData [][]float64,
-  productNames []string,
-  sectorToProducts map[string] []string) {
+func GetBookKeepingData() (fData ComputedFData) {
 
-  sectorToProducts = make(map[string] []string)
-  conn,_ := redis.Dial("tcp", "127.0.0.1:6379")
+  fData = ComputedFData{
+    OriginalData: [][]float64{},
+    ProductNames: []string{},
+    SectorToProducts: map[string] []string{},
+  }
+
+  // sectorToProducts = make(map[string] []string)
+  conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
 
   // Get a list of all the sectors.
   sectors := make([]string, 0)
@@ -52,20 +56,20 @@ func GetBookKeepingData(user_id int) (
 
       // Save sector product mappings and product names
       if ok && name_turn(loop_count) {
-        sectorToProducts[sector] = append(sectorToProducts[sector], string(v))
-        productNames             = append(productNames, string(v))
+        fData.SectorToProducts[sector] = append(fData.SectorToProducts[sector], string(v))
+        fData.ProductNames             = append(fData.ProductNames, string(v))
       }
 
       // save products data.
       if ok && data_turn(loop_count){
         data := make([]float64, 0)
         json.Unmarshal(v, &data)
-        productsFData = append(productsFData, data)
+        fData.OriginalData = append(fData.OriginalData, data)
       }
 
       loop_count++
     }
   }
 
-  return productsFData, productNames, sectorToProducts
+  return fData
 }

@@ -3,11 +3,12 @@ package fcompute
 import (
   "testing"
   "reflect"
+  "os"
   "github.com/garyburd/redigo/redis"
 )
 
 func setup_test_db() {
-  conn,_ := redis.Dial("tcp", "127.0.0.1:6379")
+  conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
 
   conn.Send("RPUSH",  "all_sectors",  "Automobiles","Medicals")
 
@@ -24,7 +25,7 @@ func setup_test_db() {
 }
 
 func teardown_test_db() {
-  conn,_ := redis.Dial("tcp", "127.0.0.1:6379")
+  conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
   conn.Do("FLUSHDB")
 }
 
@@ -36,10 +37,10 @@ func TestDBFetchingSectorToProductMapping(t *testing.T) {
     "Medicals":    []string{"Glaxo", "Himalaya"},
   }
 
-  _,_,sectorToProducts := GetBookKeepingData(0)
+  fData := GetBookKeepingData()
 
-  if !reflect.DeepEqual(sectorToProducts, expected) {
-    t.Error("Map from db is different -> ", sectorToProducts, expected)
+  if !reflect.DeepEqual(fData.SectorToProducts, expected) {
+    t.Error("Map from db is different -> ", fData.SectorToProducts, expected)
   }
 
   teardown_test_db()
@@ -50,16 +51,16 @@ func TestDBProductNamesOrder(t *testing.T) {
 
   expected := []string {"Hyundai", "Suzuki", "Glaxo", "Himalaya"}
 
-  _,productNames,_ := GetBookKeepingData(0)
+  fData := GetBookKeepingData()
 
-  if !reflect.DeepEqual(productNames, expected) {
-    t.Error("Product names order from db is different -> ", productNames, expected)
+  if !reflect.DeepEqual(fData.ProductNames, expected) {
+    t.Error("Product names order from db is different -> ", fData.ProductNames, expected)
   }
 
   teardown_test_db()
 }
 
-func TestDBProductsFData(t *testing.T) {
+func TestDBOriginalProductsData(t *testing.T) {
   setup_test_db()
 
   expected := [][]float64 {
@@ -69,10 +70,10 @@ func TestDBProductsFData(t *testing.T) {
     []float64{10,9,8},   // Himalaya
   }
 
-  productsFData,_,_ := GetBookKeepingData(0)
+  fData := GetBookKeepingData()
 
-  if !reflect.DeepEqual(productsFData, expected) {
-    t.Error("Product data from db is different -> ", productsFData, expected)
+  if !reflect.DeepEqual(fData.OriginalData, expected) {
+    t.Error("Product data from db is different -> ", fData.OriginalData, expected)
   }
 
   teardown_test_db()

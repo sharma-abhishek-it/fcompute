@@ -12,7 +12,8 @@ func TestJSONUnmarshallingUserPrefs(t *testing.T) {
     "start_date": "2014-12-30",
     "end_date":   "2014-12-31",
     "frequency":  7,
-    "weights":    [3.1, 4.1, 5.1]
+    "weights":    [3.1, 4.1, 5.1],
+    "investment": 1000.9
   }
   `
   expected := UserPrefs{
@@ -20,6 +21,7 @@ func TestJSONUnmarshallingUserPrefs(t *testing.T) {
     EndDate:   FDataDate(time.Date(2014, time.December, 31, 0,0,0,0,time.UTC)),
     RebalanceFrequency: 7,
     Weights:   []float64{3.1, 4.1, 5.1},
+    Investment: 1000.9,
   }
   got := UserPrefs{}
   json.Unmarshal([]byte(input), &got)

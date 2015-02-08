@@ -23,6 +23,7 @@ type UserPrefs struct {
   StartDate            FDataDate `json:"start_date"`
   EndDate              FDataDate `json:"end_date"`
   RebalanceFrequency   int       `json:"frequency"`
+  Investment           float64   `json:"investment"`
   Weights              []float64 `json:"weights"`
 }
 
