@@ -20,7 +20,9 @@ install:
   - cp -rf $HOME/gopath/src/github.com/sharma-abhishek-it/fcompute $HOME/gopath/src/
   - cd $HOME/gopath/src/fcompute
   - go get ./...
-  - cd $HOME/gopath/src/github.com/sharma-abhishek-it/fcompute
+
+before_script:
+  - cd $HOME/gopath/src/fcompute
 
 script:
   - $HOME/gopath/bin/goveralls -service=travis-ci ./...
