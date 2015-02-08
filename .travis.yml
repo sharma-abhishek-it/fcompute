@@ -17,7 +17,7 @@ install:
   - go get ./...
 
 script:
-  - $HOME/gopath/bin/goveralls -service=travis-ci
+  - $HOME/gopath/bin/goveralls ./... -service=travis-ci
 
 notifications:
   email: false
