@@ -17,6 +17,8 @@ func ReportsController(c web.C, w http.ResponseWriter, r *http.Request) {
     prefs = c.Env["prefs"].(fcompute.UserPrefs)
     report_names = c.Env["reports"].([]string)
   }
+  fmt.Println(report_names)
+  fmt.Println(prefs)
 
   fmt.Fprintf(w, "TODO: NOT YET IMPLEMENTED")
 }
