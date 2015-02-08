@@ -17,8 +17,6 @@ env:
   - REDIS_HOST=localhost REDIS_PORT=6379 REDIS_DB=1
 
 install:
-  - go get fcompute/lib
-  - go get fcompute/main
   - cp -rf $HOME/gopath/src/github.com/sharma-abhishek-it/fcompute $HOME/gopath/src/
   - cd $HOME/gopath/src/fcompute
   - go get ./...
