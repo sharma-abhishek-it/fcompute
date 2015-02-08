@@ -19,6 +19,10 @@ env:
 install:
   - go get fcompute/lib
   - go get fcompute/main
+  - cp -rf $HOME/gopath/src/github.com/sharma-abhishek-it/fcompute $HOME/gopath/src/
+  - cd $HOME/gopath/src/fcompute
+  - go get ./...
+  - cd $HOME/gopath/src/github.com/sharma-abhishek-it/fcompute
 
 script:
   - $HOME/gopath/bin/goveralls -service=travis-ci ./...
