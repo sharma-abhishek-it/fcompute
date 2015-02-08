@@ -17,5 +17,6 @@ The project is assembled as
 -----------------
 Setup steps:
 1. Install and run Docker (boot2docker on osx)
-2. In this dir run `fig build app` then `fig up`
-3. To run test cases `fig run app go test`
+2. Install [fig](http://www.fig.sh/)
+3. In this dir run `fig build app` then `fig up`
+4. To run test cases `fig run app go test`
