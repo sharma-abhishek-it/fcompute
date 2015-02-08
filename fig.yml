@@ -2,6 +2,8 @@ app:
   build: .
   links:
     - redis
+  ports:
+    - 9000:9000
   volumes:
     - .:/go/src/fcompute
   environment:
@@ -9,8 +11,7 @@ app:
     - REDIS_PORT=6379
     - REDIS_DB=1
   working_dir: /go/src/fcompute
-  ports:
-    - "3000:3000"
+  command: /bin/bash -l -c '/usr/src/go/bin/go install ./... && /go/bin/main -bind :9000'
 
 redis:
   image: redis:2.8.19
