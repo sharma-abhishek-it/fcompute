@@ -28,9 +28,7 @@ before_script:
 script:
   - go test ./...
   - gover
-
-after_success:
-  - $HOME/gopath/bin/goveralls -coverprofile=gover.coverprofile -service=travis-ci
+  - goveralls -coverprofile=gover.coverprofile -service=travis-ci
 
 notifications:
   email: false
