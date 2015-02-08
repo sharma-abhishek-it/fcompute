@@ -1,11 +1,7 @@
 FROM golang:1.4
 
-RUN go get github.com/tools/godep
+ADD . $GOPATH/src/fcompute
 
-RUN mkdir /tmp/Godeps
+RUN cd $GOPATH/src/fcompute && go get ./...
 
-ADD Godeps/Godeps.json /tmp/Godeps/
-
-RUN cd /tmp && godep restore
-
-RUN rm -rf /tmp/Godeps
+RUN rm -rf $GOPATH/src/fcompute
