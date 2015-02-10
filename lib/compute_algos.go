@@ -1,6 +1,54 @@
 package fcompute
 
+import (
+  "os"
+  "time"
+)
+
+const ENV_START_DATE_KEY string = "FDATA_STARTING_DATE"
+const ENV_END_DATE_KEY string = "FDATA_ENDING_DATE"
+
+// Slice original data based on dates.
+// Currently stores the beginning date for all data in environment variable
+// o/w a proper sync mechanism to redis when sidekiq pushes data will be needed
+// Ending Date is assumed that it will be within range else take full data for ending
+func (fData ComputedFData) getSlicingIndexes(prefs UserPrefs)(int, int) {
+  starting_index, ending_index := 0, len(fData.OriginalData[0]) - 1
+
+  starting_date_string := os.Getenv(ENV_START_DATE_KEY)
+  ending_date_string   := os.Getenv(ENV_END_DATE_KEY)
+  starting_date, _     := time.Parse(ShortTimeFormat, starting_date_string)
+  ending_date, _       := time.Parse(ShortTimeFormat, ending_date_string)
+
+  if( !starting_date.IsZero() &&
+      !time.Time(prefs.StartDate).IsZero() &&
+      starting_date.Before(time.Time(prefs.StartDate)) ) {
+
+    starting_index = prefs.StartDate.DaysSince(FDataDate(starting_date))
+    starting_index -= 1 // 0 based array indexes
+    if (starting_index >= ending_index) {
+      starting_index = 0
+    }
+  }
+
+  if( !ending_date.IsZero() &&
+      !time.Time(prefs.EndDate).IsZero() &&
+      ending_date.After(time.Time(prefs.EndDate)) ) {
+
+    ending_index -= prefs.EndDate.DaysSince(FDataDate(ending_date))
+    ending_index += 1 // slicing is exclusive of end index hence the increment
+    if (ending_index <= starting_index) {
+      ending_index = len(fData.OriginalData[0]) - 1
+    }
+  }
+
+  return starting_index, ending_index
+}
+
 func (fData *ComputedFData) PreCompute(prefs UserPrefs) {
+
+  start,end                 := fData.getSlicingIndexes(prefs)
+  fData.OriginalData         = fData.OriginalData[start:end+1]
 
   fData.DailyAssetValue      = make([][]float64, 0)
   fData.NetDailyAssetValue   = []float64{prefs.Investment}
