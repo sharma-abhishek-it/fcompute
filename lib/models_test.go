@@ -37,9 +37,19 @@ func TestJSONUnmarshallingUserPrefs(t *testing.T) {
   }
 }
 
-func TestUserPrefsDateDifference(t *testing.T) {
+func TestUserPrefsDateDifference_ToBe_Inclusive_Of_BothDates(t *testing.T) {
   t1 := FDataDate(time.Date(2014, time.December, 30, 0,0,0,0,time.UTC))
   t2 := FDataDate(time.Date(2014, time.December, 31, 0,0,0,0,time.UTC))
+  expected := 2
+
+  if t1.DaysSince(t2) != expected {
+    t.Error("Difference in days is not expected", t1.DaysSince(t2), expected)
+  }
+}
+
+func TestUserPrefsDateDifference_ToCalculate_Absolute_Difference_Before_or_After(t *testing.T) {
+  t1 := FDataDate(time.Date(2014, time.December, 31, 0,0,0,0,time.UTC))
+  t2 := FDataDate(time.Date(2014, time.December, 30, 0,0,0,0,time.UTC))
   expected := 2
 
   if t1.DaysSince(t2) != expected {

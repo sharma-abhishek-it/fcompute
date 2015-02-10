@@ -2,21 +2,22 @@ package fcompute
 
 import (
   "time"
+  "math"
 )
 
-const shortTimeFormat = "2006-01-02"
+const ShortTimeFormat = "2006-01-02"
 
 type FDataDate time.Time
 
 func (t *FDataDate) UnmarshalJSON(b []byte) error {
-  v, _ := time.Parse(shortTimeFormat, string(b[1:len(b)-1]))
+  v, _ := time.Parse(ShortTimeFormat, string(b[1:len(b)-1]))
   *t = FDataDate(v)
   return nil
 }
 
 func (t1 FDataDate) DaysSince(t2 FDataDate) int {
   this, that := time.Time(t1), time.Time(t2)
-  return int(that.Sub(this).Hours() / 24) + 1
+  return int(math.Abs(that.Sub(this).Hours() / 24)) + 1
 }
 
 type UserPrefs struct {
