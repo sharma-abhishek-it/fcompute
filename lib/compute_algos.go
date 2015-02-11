@@ -84,3 +84,24 @@ func (fData *ComputedFData) PreCompute(prefs UserPrefs) {
     }
   }
 }
+
+func (fData ComputedFData) MaximumDrawdown() float64 {
+  calc_drawdown := func(peak, low float64) float64 { return (peak-low) / peak }
+
+  series := fData.NetDailyAssetValue
+  last_peak_value, max_drawdown := series[0], float64(0)
+
+  for i,length := 1,len(series); i < length; i++ {
+    prev, now := series[i-1], series[i]
+
+    if prev < now && now > last_peak_value {
+      last_peak_value = now
+    } else if prev > now && calc_drawdown(last_peak_value, now) > max_drawdown {
+      max_drawdown = calc_drawdown(last_peak_value, now)
+    }
+
+  }
+
+  return max_drawdown
+
+}
