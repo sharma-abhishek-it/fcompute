@@ -6,9 +6,6 @@ import(
   "os"
 )
 
-func even(x int) bool { return x % 2 == 0 }
-func odd(x int) bool  { return x % 2 != 0 }
-
 // Before calculating a minimum set of information is needed
 // Products, Sectors and financial data is stored in Redis.
 // With as minimal round trips as possible we try to get that data

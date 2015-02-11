@@ -3,6 +3,7 @@ package fcompute
 import (
   "os"
   "time"
+  "math"
 )
 
 const ENV_START_DATE_KEY string = "FDATA_STARTING_DATE"
@@ -93,6 +94,27 @@ func (fData ComputedFData) PNLData() (pnl []float64) {
   for i, val := range series { pnl[i] = val - investment }
 
   return pnl
+}
+
+func (fData ComputedFData) NetReturns() float64 {
+  series := fData.NetDailyAssetValue
+  last   := len(series) - 1
+
+  net_returns := series[last] - series[0]
+
+  if net_returns < 0 {
+    return 0
+  } else {
+    return (net_returns / series[0]) * 100
+  }
+}
+
+func (fData ComputedFData) AnnualizedReturns() float64 {
+  series := fData.NetDailyAssetValue
+
+  annualized_returns := math.Exp(252*mean(series)-1) * 100
+
+  return annualized_returns
 }
 
 func (fData ComputedFData) MaximumDrawdown() float64 {
