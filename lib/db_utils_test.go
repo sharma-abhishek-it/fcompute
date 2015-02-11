@@ -10,14 +10,14 @@ import (
 func setup_test_db() {
   conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
 
-  conn.Send("RPUSH",  "all_sectors",  "Automobiles","Medicals")
+  conn.Send("SADD",  "all_sectors",  "Automobiles","Medicals")
 
-  conn.Send("RPUSH",  "Automobiles:Products", "Hyundai",  "Suzuki")
+  conn.Send("SADD",  "Automobiles:Products", "Hyundai",  "Suzuki")
   conn.Send("HMSET", "Automobiles:Hyundai", "name", "Hyundai",  "data", "[10,20,30]")
   conn.Send("HMSET", "Automobiles:Suzuki",  "name", "Suzuki",   "data", "[18,19,20]")
 
 
-  conn.Send("RPUSH",  "Medicals:Products", "Himalaya", "Glaxo")
+  conn.Send("SADD",  "Medicals:Products", "Himalaya", "Glaxo")
   conn.Send("HMSET", "Medicals:Himalaya",   "name", "Himalaya", "data", "[10,9,8]")
   conn.Send("HMSET", "Medicals:Glaxo",      "name", "Glaxo",    "data", "[3,4,5]")
 
