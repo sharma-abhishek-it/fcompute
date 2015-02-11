@@ -58,6 +58,20 @@ func TestPreComputeWithUnbalancedEndDay(t *testing.T) {
   }
 }
 
+func TestPreCompute_First_NetDailyAssetValue_Equals_Initial_Investment(t *testing.T) {
+  data,prefs := testing_data()
+  prefs.RebalanceFrequency = 2
+
+  expected := prefs.Investment
+
+  data.PreCompute(prefs)
+
+  if data.NetDailyAssetValue[0] != expected {
+    t.Errorf("Expected output mismatched for net_daily_asset | Expected = %f, Got = %f",
+    expected, data.NetDailyAssetValue[0])
+  }
+}
+
 func TestPreCompute_With_Custom_Starting_Ending_Dates_Data_Length(t *testing.T) {
   data,prefs := testing_data()
   data.OriginalData = [][]float64 {{3,5,4,6,7},{2,4,3,3,8},{5,6,4,7,9}}

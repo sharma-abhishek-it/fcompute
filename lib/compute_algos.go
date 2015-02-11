@@ -85,6 +85,16 @@ func (fData *ComputedFData) PreCompute(prefs UserPrefs) {
   }
 }
 
+func (fData ComputedFData) PNLData() (pnl []float64) {
+  series := fData.NetDailyAssetValue
+  pnl = series
+  investment := series[0]
+
+  for i, val := range series { pnl[i] = val - investment }
+
+  return pnl
+}
+
 func (fData ComputedFData) MaximumDrawdown() float64 {
   calc_drawdown := func(peak, low float64) float64 { return (peak-low) / peak }
 
