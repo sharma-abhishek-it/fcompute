@@ -49,13 +49,14 @@ func (fData ComputedFData) getSlicingIndexes(prefs UserPrefs)(int, int) {
 func (fData *ComputedFData) PreCompute(prefs UserPrefs) {
 
   start,end                 := fData.getSlicingIndexes(prefs)
-  fData.OriginalData         = fData.OriginalData[start:end+1]
+  for i,_ := range fData.OriginalData {
+    fData.OriginalData[i] = fData.OriginalData[i][start:end+1]
+  }
 
   fData.DailyAssetValue      = make([][]float64, 0)
   fData.NetDailyAssetValue   = []float64{prefs.Investment}
   total_days,total_products := len(fData.OriginalData[0]),len(fData.OriginalData)
   last_rebalanced_day       := 0
-
 
   for _,weight := range prefs.Weights {
     fData.DailyAssetValue    = append(fData.DailyAssetValue, []float64{weight * prefs.Investment})
