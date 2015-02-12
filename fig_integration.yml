@@ -9,7 +9,7 @@ sidekiq:
     - DB_HOST=postgres
     - REDIS_HOST=redis
     - REDIS_PORT=6379
-    - REDIS_DB=0
+    - REDIS_DB=1
     - REDIS_SQ_DB=6
     - RAILS_ENV=development
     - DB_USERNAME=postgres
@@ -30,6 +30,8 @@ fcompute:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
     - REDIS_DB=1
+    - FDATA_STARTING_DATE=2005-01-03
+    - FDATA_ENDING_DATE=2014-10-24
   working_dir: /go/src/fcompute
   command: /bin/bash -l -c '/usr/src/go/bin/go install ./... && /go/bin/main -bind :9000'
 

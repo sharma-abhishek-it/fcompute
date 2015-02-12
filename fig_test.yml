@@ -2,16 +2,16 @@ fcompute:
   build: ./fcompute
   links:
     - redis
+  ports:
+    - 9000:9000
   volumes:
     - ./fcompute:/go/src/fcompute
   environment:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
     - REDIS_DB=1
-    - FDATA_STARTING_DATE=2005-01-03
-    - FDATA_ENDING_DATE=2014-10-24
   working_dir: /go/src/fcompute
-  command: go test -v -bench BenchmarkReportsRequest ./main
+  command: go test ./...
 
 redis:
   image: redis:2.8.19

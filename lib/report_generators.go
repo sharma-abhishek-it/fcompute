@@ -1,21 +1,40 @@
 package fcompute
 
-type ProfitNLoss struct {
-  report_name string
-  data        []float64
+type ProfitNLossReport struct {
+  Name string     `json:"name"`
+  Data []float64  `json:"data"`
+}
+func (report *ProfitNLossReport) Generate(computed ComputedFData) {
+  report.Name = "pnl_report"
+  report.Data = computed.PNLData()
 }
 
-type NetReturn struct {
-  report_name string
-  data        float64
+
+type NetReturnsReport struct {
+  Name string     `json:"name"`
+  Data float64    `json:"data"`
+}
+func (report *NetReturnsReport) Generate(computed ComputedFData) {
+  report.Name = "net_returns_report"
+  report.Data = computed.NetReturns()
 }
 
-type AnnualizedReturn struct {
-  report_name string
-  data        float64
+
+type AnnualizedReturnsReport struct {
+  Name string     `json:"name"`
+  Data float64    `json:"data"`
+}
+func (report *AnnualizedReturnsReport) Generate(computed ComputedFData) {
+  report.Name = "annualized_returns_report"
+  report.Data = computed.AnnualizedReturns()
 }
 
-type MaximumDropdown struct {
-  report_name string
-  data        float64
+
+type MaximumDrawdownReport struct {
+  Name string     `json:"name"`
+  Data float64    `json:"data"`
+}
+func (report *MaximumDrawdownReport) Generate(computed ComputedFData) {
+  report.Name = "max_drawdown_report"
+  report.Data = computed.MaximumDrawdown()
 }

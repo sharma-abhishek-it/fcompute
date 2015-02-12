@@ -20,3 +20,24 @@ Setup steps:
 2. Install [fig](http://www.fig.sh/)
 3. In this dir run `fig build app` then `fig up`
 4. To run test cases `fig run app go test`
+
+-----------------
+Inetgration steps
+Make sure that both repos fcompute and fcompute_frontend_server are inside the same directory
+which we will call as root for time being. This will be our working dir for the entire process
+
+- Stop and kill all containers `docker stop $(docker ps -a -q)` and `docker rm $(docker ps -a -q)`
+- Copy *Data* directory to *fcompute_frontend_server/tmp*
+- Copy *fig_integration.yml*, *fig_test.yml*, *fig_benchmark.yml* to the one level up(root) dir
+- Copy *fig_sidekiq.yml* from frontend_web_server to root dir
+- Run `fig -f fig_integration.yml run sidekiq bundle exec rake db:setup`
+- To simply start server for checking api requests do `fig -f fig_integration.yml up`. Make sure to make your first request only after sidekiq has run once to get the Data into Redis. It runs every minute but that can be changed in code. On successful completion of sidekiq process Data dir is deleted from tmp.
+
+For benchmarking or testing
+- Copy *Data* directory to *fcompute_frontend_server/tmp*
+- Run `fig -f fig_sidekiq.yml run sidekiq bundle exec rake db:setup`
+- Run `fig -f fig_sidekiq.yml run sidekiq`
+- Wait for sidekiq to run once i.e Data dir deleted from tmp
+- Stop this sidekiq
+- For testing do `fig -f fig_test.yml run fcompute`
+- For benchmarking do `fig -f fig_benchmark.yml run fcompute`

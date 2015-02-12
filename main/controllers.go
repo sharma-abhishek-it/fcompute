@@ -5,6 +5,7 @@ import (
   "net/http"
   "github.com/zenazn/goji/web"
   "fcompute/lib"
+  "encoding/json"
 )
 
 func ReportsController(c web.C, w http.ResponseWriter, r *http.Request) {
@@ -15,8 +16,41 @@ func ReportsController(c web.C, w http.ResponseWriter, r *http.Request) {
     prefs = c.Env["prefs"].(fcompute.UserPrefs)
     report_names = c.Env["reports"].([]string)
   }
-  if (len(report_names) > 0 && prefs.Investment != 0) {
-    fmt.Fprintf(w, "TODO: NOT YET IMPLEMENTED")
-  }
 
+  reports := []interface{} {}
+  fData := fcompute.GetBookKeepingData()
+  fData.PreCompute(prefs)
+
+  for _, name := range report_names {
+    var report interface{}
+    switch name {
+      case "pnl_report":
+        r := fcompute.ProfitNLossReport{}
+        r.Generate(fData)
+        report = interface{}(r)
+      case "net_returns_report":
+        r := fcompute.NetReturnsReport{}
+        r.Generate(fData)
+        report = interface{}(r)
+      case "annualized_returns_report":
+        r := fcompute.AnnualizedReturnsReport{}
+        r.Generate(fData)
+        report = interface{}(r)
+      case "max_drawdown_report":
+        r := fcompute.MaximumDrawdownReport{}
+        r.Generate(fData)
+        report = interface{}(r)
+    }
+
+    if report != nil {
+      reports = append(reports, report)
+    }
+  }
+  json_response, err := json.Marshal(reports)
+
+  if err != nil {
+    http.Error(w, "{'error': 'Something bad happened'}", http.StatusInternalServerError)
+  } else {
+    fmt.Fprintf(w, string(json_response))
+  }
 }

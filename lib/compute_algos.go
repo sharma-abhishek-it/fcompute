@@ -88,7 +88,9 @@ func (fData *ComputedFData) PreCompute(prefs UserPrefs) {
 }
 
 func (fData ComputedFData) PNLData() (pnl []float64) {
-  series := fData.NetDailyAssetValue
+  // copy is necessary to avoid modifying original
+  series := make([]float64, len(fData.NetDailyAssetValue))
+  copy(series, fData.NetDailyAssetValue)
   pnl = series
   investment := series[0]
 
@@ -111,7 +113,15 @@ func (fData ComputedFData) NetReturns() float64 {
 }
 
 func (fData ComputedFData) AnnualizedReturns() float64 {
-  series := fData.NetDailyAssetValue
+  // copy is necessary to avoid modifying original
+  series := make([]float64, len(fData.NetDailyAssetValue))
+  copy(series, fData.NetDailyAssetValue)
+
+  for i, val := range series { series[i] = math.Log(val) }
+  var log_investment = series[0]
+  for i, val := range series { series[i] = val -  log_investment}
+
+  series = series[1:]
 
   annualized_returns := math.Exp(252*mean(series)-1) * 100
 
