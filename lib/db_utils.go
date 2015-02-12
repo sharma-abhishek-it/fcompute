@@ -24,6 +24,7 @@ func GetBookKeepingData() (fData ComputedFData) {
 
   // sectorToProducts = make(map[string] []string)
   conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
+  conn.Do("SELECT", os.Getenv("REDIS_DB"))
 
   // Get a list of all the sectors.
   sectors := make([]string, 0)

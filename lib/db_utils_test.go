@@ -9,6 +9,8 @@ import (
 
 func setup_test_db() {
   conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
+  os.Setenv("REDIS_DB", "10")
+  conn.Do("SELECT", "10")
 
   conn.Send("SADD",  "all_sectors",  "Automobiles","Medicals")
 
@@ -26,6 +28,7 @@ func setup_test_db() {
 
 func teardown_test_db() {
   conn,_ := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
+  conn.Do("SELECT", "10")
   conn.Do("FLUSHDB")
 }
 
